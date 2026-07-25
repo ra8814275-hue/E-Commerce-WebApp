@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      width: 400px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    #message {
+      margin: 10px 0;
+    }
+
+    #userInfo {
+      margin: 20px 0;
+      line-height: 1.8;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background: #dc3545;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>User Dashboard</h2>
+
+    <p id="message">Loading profile...</p>
+
+    <div id="userInfo"></div>
+
+    <button onclick="logout()">Logout</button>
+
+  </div>
+
+  <script>
+
+    async function loadProfile() {
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please Login First");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+
+        const response = await fetch(
+          "http://localhost:5000/api/users/profile",
+          {
+            method: "GET",
+
+            headers: {
+              "Authorization": "Bearer " + token
+            }
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+          document.getElementById("message").innerText =
+            data.message;
+
+          document.getElementById("userInfo").innerHTML = `
+            <p><strong>Name:</strong> ${data.user.name}</p>
+            <p><strong>Email:</strong> ${data.user.email}</p>
+          `;
+
+        } else {
+
+          document.getElementById("message").innerText =
+            data.message || "Unable to load profile";
+
+        }
+
+      } catch (error) {
+
+        document.getElementById("message").innerText =
+          "Server connection failed";
+
+      }
+    }
+
+
+    function logout() {
+
+      localStorage.removeItem("token");
+
+      alert("Logout Successful");
+
+      window.location.href = "login.html";
+    }
+
+
+    loadProfile();
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    background:#fff;
+    padding:30px;
+    width:350px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+h2{
+    text-align:center;
+}
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+button{
+    width:100%;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+button:hover{
+    background:#0056b3;
+}
+#result{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>User Register</h2>
+
+<input type="text" id="name" placeholder="Name">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
+
+<p id="result"></p>
+</div>
+
+<script>
+async function register(){
+
+const name=document.getElementById("name").value;
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+const res=await fetch("http://localhost:5000/api/users/register",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+email,
+password
+})
+});
+
+const data=await res.json();
+
+document.getElementById("result").innerHTML=data.message;
+}
+</script>
+
+</body>
+</html>
